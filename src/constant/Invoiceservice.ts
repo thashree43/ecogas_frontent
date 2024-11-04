@@ -1,9 +1,10 @@
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { TDocumentDefinitions,  } from 'pdfmake/interfaces';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { Orderdatas } from '../interfacetypes/type';
-// Initialize pdfMake with fonts
-(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+
+// Properly initialize pdfMake with fonts
+pdfMake.vfs = pdfFonts.pdfMake?.vfs || {};
 
 export const generateInvoice = (order: Orderdatas) => {
     // Format date

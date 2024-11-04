@@ -198,7 +198,7 @@ export interface Chat {
   _id: string;
   chatname: string;
   user: { username: string }[];
-  admin:{ _id:string,username: string }[]
+  admin:{ _id:string }[]
   latestmessage?: { content: string }[]; // Marking latestmessage as optional
   updatedAt?: string; // Marking updatedAt as optional
 }
