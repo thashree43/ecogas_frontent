@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "sync":"aws s3 sync --profile 'meech-ward' ./dist 's3://ecogas.fun/'",
     "lint": "eslint .",
     "preview": "vite preview"
   },
