@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import Lottie from "react-lottie";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import loginAnimation from "../../Animation/Animation - 1725986382181 (1).json";
+import loginAnimation from "../../animation/Animation - 1725986382181 (1).json";
 import { validateInput, hasFormErrors } from "../../validationpages/validation";
 import {
   useAgentloginMutation,

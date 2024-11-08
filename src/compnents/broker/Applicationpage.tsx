@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import Lottie from "react-lottie";
-import fuelAnimation from "../../Animation/Animation - 1725986382181 (1).json"; // Path to your Lottie animation JSON file
+import fuelAnimation from "../../animation/Animation - 1725986382181 (1).json"; // Path to your Lottie animation JSON file
 import { validateInput, hasFormErrors } from "../../validationpages/validation";
 import { useAgentapplyMutation } from "../../store/slice/Brokerslice";
 import { Link, useNavigate } from "react-router-dom";

@@ -4,8 +4,8 @@ import { IoMdQrScanner } from 'react-icons/io';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../index.css';
 import LottieAnimation from '../../../layouts/LootieAnimation';
-import animationData from '../../../Animation/Animation - 1724130371624.json';
-import entryAnimationData from '../../../Animation/Animation - 1724145569733.json';
+import animationData from '../../../animation/Animation - 1724130371624.json';
+import entryAnimationData from '../../../animation/Animation - 1724145569733.json';
 
 const Homepage: React.FC = () => {
   const [isEntryScreenVisible, setIsEntryScreenVisible] = useState(true);

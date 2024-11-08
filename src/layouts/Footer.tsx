@@ -2,7 +2,7 @@ import React from 'react';
 import { FaTruck, FaPercent, FaCheckCircle, FaEdit, FaInstagram, FaWhatsapp, FaFacebookF, FaTwitter } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LottieAnimation from './LootieAnimation';
-import truckAnimationData from '../Animation/Animation - 1724130057483.json';
+import truckAnimationData from '../animation/Animation - 1724130057483.json';
 
 const Footer = React.forwardRef<HTMLDivElement>((props, ref) => (
   <footer
