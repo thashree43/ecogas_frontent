@@ -19,7 +19,7 @@ interface MessageContentProps {
 
 }
 
-const ENDPOINTS = "http://localhost:3000";
+const ENDPOINTS = "https://zenvogue.online";
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 const CustomerExperience: React.FC<ChatPageProps> = ({ }) => {

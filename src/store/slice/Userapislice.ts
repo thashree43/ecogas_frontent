@@ -60,21 +60,17 @@ interface RefreshTokenResponse {
 const baseQuery = fetchBaseQuery({
   baseUrl: baseurluser,
   credentials: 'include',
-  prepareHeaders: (headers, ) => {
-    
+  prepareHeaders: (headers) => {
     const token = localStorage.getItem("userToken");
-
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     } else {
       console.log("No token found in localStorage");
     }
-
-    
-
     return headers;
   },
 });
+
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,

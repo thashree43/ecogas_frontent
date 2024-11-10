@@ -21,7 +21,7 @@ const ChatPage: React.FC<ChatPageProps> = ({  }) => {
 //     isError: messagesError,
 //   } = useGetmessagesQuery(chatId);
 
-  const socketio = socketIOClient("http://localhost:3000");
+  const socketio = socketIOClient("https://zenvogue.online");
 
   useEffect(() => {
     socketio.on("chat", (message) => {

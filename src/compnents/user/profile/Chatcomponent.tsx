@@ -13,7 +13,7 @@ interface ChatWidgetProps {
   chatId?: string;
 }
 
-const ENDPOINTS = "http://localhost:3000";
+const ENDPOINTS = "https://zenvogue.online";
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onClose, chatId }) => {
