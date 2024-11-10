@@ -1,7 +1,7 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { baseurluser } from "../api";
 import { HttpMethod } from "../../schema/httpmethod";
-
+import {setUserToken,setUserInfo,clearUserInfo, clearUserToken} from './Authslice'
 interface User {
   success: any;
   _id: string;
@@ -166,20 +166,31 @@ export const userApislice = createApi({
       }),
     }),
     login: builder.mutation({
-      query: ({ email, password }) => ({
+      query: (credentials) => ({
         url: "/login",
         method: "POST",
-        body: { email, password },
-        credentials:"include"
+        body: credentials,
       }),
-      async onQueryStarted(_args, { queryFulfilled }) {
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
-          await queryFulfilled;
+          const { data } = await queryFulfilled;
+          // Update user info and token in Redux store
+          dispatch(setUserToken(data.token));
+          dispatch(setUserInfo({
+            username: data.user.username,
+            user: data.user,
+            name: data.user.username,
+            email: data.user.email,
+            mobile: data.user.mobile,
+            password: '', // Don't store password in state
+          }));
+          localStorage.setItem("userrefreshToken", data.refreshtoken);
         } catch (error) {
-          console.error('Login failed:', error);
+          console.error("Login failed:", error);
         }
-      }
+      },
     }),
+    
     refreshtoken:builder.mutation({
       query:()=>({
         url:"/userrefresh-token",
@@ -214,11 +225,21 @@ export const userApislice = createApi({
         body: postdata,
       }),
     }),
-    logout:builder.mutation<void,void>({
-      query:()=>({
-        url:"/logout",
-        method:"POST",
-      })
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+      async onQueryStarted(_, { dispatch }) {
+        try {
+          // Clear auth state
+          dispatch(clearUserToken());
+          dispatch(clearUserInfo());
+          localStorage.removeItem("userrefreshToken");
+        } catch (error) {
+          console.error("Logout failed:", error);
+        }
+      },
     }),
      getProviders: builder.query<GasProvider[], string>({
       query: (pincode) => `/gas-providers/${pincode}`,
