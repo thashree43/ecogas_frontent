@@ -61,11 +61,13 @@ const baseQuery = fetchBaseQuery({
   baseUrl: baseurluser,
   credentials: 'include',
   prepareHeaders: (headers) => {
-    const token = localStorage.getItem("userToken");
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userToken='))
+      ?.split('=')[1];
+
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
-    } else {
-      console.log("No token found in localStorage");
     }
     return headers;
   },
@@ -82,7 +84,7 @@ const baseQueryWithReauth: BaseQueryFn<
     console.log("Token expired, attempting to refresh...");
 
     const refreshResult = await baseQuery(
-      { url: '/userrefresh-token', method: 'POST' },
+      { url: '/userrefresh-token', method: 'POST' ,credentials:"include"},
       api,
       extraOptions
     );
@@ -168,7 +170,15 @@ export const userApislice = createApi({
         url: "/login",
         method: "POST",
         body: { email, password },
+        credentials:"include"
       }),
+      async onQueryStarted(_args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.error('Login failed:', error);
+        }
+      }
     }),
     refreshtoken:builder.mutation({
       query:()=>({
