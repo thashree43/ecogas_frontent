@@ -65,29 +65,29 @@ const LoginComponent: React.FC<LoginPageProps> = ({
       onClose();
       toast.success("Successfully logged in!");
     } catch (error: any) {
-      if (error.status === 401) {
-        console.error("login failed", error);
-        try {
-          console.log("the token set to refresh ");
+      // if (error.status === 401) {
+      //   console.error("login failed", error);
+      //   try {
+      //     console.log("the token set to refresh ");
           
-          const refreshResult = await refreshtoken({}).unwrap();
-          console.log("reached the refresh token");
+      //     const refreshResult = await refreshtoken({}).unwrap();
+      //     console.log("reached the refresh token");
           
-          localStorage.setItem("userToken", refreshResult.token);
-          const retryRes = await loginPost({ email, password }).unwrap(); 
-          console.log("the refreshed token");       
-          dispatch(setUserInfo(retryRes));          
-           dispatch(setUserToken(retryRes.token)); 
+      //     localStorage.setItem("userToken", refreshResult.token);
+      //     const retryRes = await loginPost({ email, password }).unwrap(); 
+      //     console.log("the refreshed token");       
+      //     dispatch(setUserInfo(retryRes));          
+      //      dispatch(setUserToken(retryRes.token)); 
 
-          navigate("/"); 
-          setEmail("");
-          setPassword("");
-          onClose();
-          toast.success("Successfully logged in!");
-        } catch (refreshError: any) {
-          setLoginError("Login failed after token refresh. Please try again.");
-        }
-      }
+      //     navigate("/"); 
+      //     setEmail("");
+      //     setPassword("");
+      //     onClose();
+      //     toast.success("Successfully logged in!");
+      //   } catch (refreshError: any) {
+      //     setLoginError("Login failed after token refresh. Please try again.");
+      //   }
+      // }
     }
   };
 
