@@ -1,7 +1,7 @@
 // src/config/api.ts or similar file
 export const API_CONFIG = {
     // Get the base URL from environment variable with fallback
-    BASE_URL: import.meta.env.VITE_LOCAL_PORT || 'https://zenvogue.online',
+    BASE_URL: import.meta.env.VITE_LOCAL_PORT || 'https://www.zenvogue.online/',
     
     // API paths
     PATHS: {
