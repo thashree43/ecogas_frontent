@@ -3,10 +3,16 @@ import { FaHome, FaUsers, FaSignOutAlt, FaBuilding } from "react-icons/fa";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {useAgentlogoutMutation} from "../../../store/slice/Brokerslice"
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("dashboard");
+  const [logout] = useAgentlogoutMutation(); 
+  const AGENT_STORAGE_KEY = "agentInfo";
+  const AGENT_TOKEN_KEY = "agentToken";
+  const AGENT_REFRESH_TOKEN_KEY = "agentRefreshToken";
+  const AGENT_SESSION_KEY = "agentSpecificKey";
 
   const agent = localStorage.getItem("agentInfo");
   let agentName = "";
@@ -22,12 +28,35 @@ const Sidebar: React.FC = () => {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/agent/login");
+  
+  const handleLogout = async () => {
+    try {
+      // Call the logout API
+      await logout().unwrap();
+
+      // Create a list of agent-specific keys to remove
+      const agentSpecificKeys = [
+        AGENT_STORAGE_KEY,
+        AGENT_TOKEN_KEY,
+        AGENT_REFRESH_TOKEN_KEY
+      ];
+
+      // Remove only agent-related items from localStorage
+      agentSpecificKeys.forEach(key => {
+        localStorage.removeItem(key);
+      });
+
+      // Remove agent-specific session storage
+      sessionStorage.removeItem(AGENT_SESSION_KEY);
+
+      toast.success("Agent logged out successfully");
+      navigate("/agent/login");
+    } catch (error) {
+      console.error("Agent logout failed:", error);
+      toast.error("Logout failed. Please try again.");
+    }
   };
+  
 
   const menuItems = [
     { id: "dashboard", icon: FaHome, label: "Dashboard", path: "/agent/dashboard" },

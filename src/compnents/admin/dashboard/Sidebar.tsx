@@ -18,8 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
-      localStorage.clear();
-      sessionStorage.clear();
+      localStorage.removeItem("adminToken");
+      sessionStorage.removeItem("adminSession");
       toast.success("Logout successful");
       navigate("/admin/login");
     } catch (error) {

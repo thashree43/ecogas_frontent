@@ -54,7 +54,9 @@ const LoginComponent: React.FC<LoginPageProps> = ({
     }
 
     try {
+      console.log("the email and password",email,password)
       const user = await loginPost({ email, password }).unwrap();
+      console.log("the user data may have recieved ",user)
       dispatch(setUserInfo(user));
       localStorage.setItem("userInfo", JSON.stringify(user)); 
       dispatch(setUserToken(user.token)); // Assuming you have an action to set user token
@@ -65,29 +67,29 @@ const LoginComponent: React.FC<LoginPageProps> = ({
       onClose();
       toast.success("Successfully logged in!");
     } catch (error: any) {
-      // if (error.status === 401) {
-      //   console.error("login failed", error);
-      //   try {
-      //     console.log("the token set to refresh ");
+      if (error.status === 401) {
+        console.error("login failed", error);
+        try {
+          console.log("the token set to refresh ");
           
-      //     const refreshResult = await refreshtoken({}).unwrap();
-      //     console.log("reached the refresh token");
+          const refreshResult = await refreshtoken({}).unwrap();
+          console.log("reached the refresh token");
           
-      //     localStorage.setItem("userToken", refreshResult.token);
-      //     const retryRes = await loginPost({ email, password }).unwrap(); 
-      //     console.log("the refreshed token");       
-      //     dispatch(setUserInfo(retryRes));          
-      //      dispatch(setUserToken(retryRes.token)); 
+          localStorage.setItem("userToken", refreshResult.token);
+          const retryRes = await loginPost({ email, password }).unwrap(); 
+          console.log("the refreshed token");       
+          dispatch(setUserInfo(retryRes));          
+           dispatch(setUserToken(retryRes.token)); 
 
-      //     navigate("/"); 
-      //     setEmail("");
-      //     setPassword("");
-      //     onClose();
-      //     toast.success("Successfully logged in!");
-      //   } catch (refreshError: any) {
-      //     setLoginError("Login failed after token refresh. Please try again.");
-      //   }
-      // }
+          navigate("/"); 
+          setEmail("");
+          setPassword("");
+          onClose();
+          toast.success("Successfully logged in!");
+        } catch (refreshError: any) {
+          setLoginError("Login failed after token refresh. Please try again.");
+        }
+      }
     }
   };
 
@@ -106,28 +108,28 @@ const LoginComponent: React.FC<LoginPageProps> = ({
       } catch (error: any) {
         console.log("abhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         
-        // if (error.status === 401) {
-        //   console.error("login failed", error);
-        //   try {
-        //     console.log("the token set to refresh ");
+        if (error.status === 401) {
+          console.error("login failed", error);
+          try {
+            console.log("the token set to refresh ");
             
-        //     const refreshResult = await refreshtoken({}).unwrap();
-        //     console.log("reached the refresh token");
+            const refreshResult = await refreshtoken({}).unwrap();
+            console.log("reached the refresh token");
             
-        //     localStorage.setItem("userToken", refreshResult.token);
-        //     const retryRes = await googleregister(token.access_token).unwrap(); 
-        //     console.log("the refreshed token");       
-        //     dispatch(setUserInfo(retryRes.user)); 
-        //     dispatch(setUserToken(retryRes.token))
-        //     navigate("/");
-        //     setEmail("");
-        //     setPassword("");
-        //     onClose();
-        //     toast.success("Successfully logged in with Google!");
-        //   } catch (refreshError: any) {
-        //     setLoginError("Login failed after token refresh. Please try again.");
-        //   }
-        // }
+            localStorage.setItem("userToken", refreshResult.token);
+            const retryRes = await googleregister(token.access_token).unwrap(); 
+            console.log("the refreshed token");       
+            dispatch(setUserInfo(retryRes.user)); 
+            dispatch(setUserToken(retryRes.token))
+            navigate("/");
+            setEmail("");
+            setPassword("");
+            onClose();
+            toast.success("Successfully logged in with Google!");
+          } catch (refreshError: any) {
+            setLoginError("Login failed after token refresh. Please try again.");
+          }
+        }
       }
     },
     onError: (error) => {

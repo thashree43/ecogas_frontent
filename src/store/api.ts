@@ -1,3 +1,3 @@
-export const baseurluser = "https://www.zenvogue.online/api/user"
-export const baseurlagent = "https://www.zenvogue.online/api/agent"
-export const basseurladmin = "https://www.zenvogue.online/api/admin"
+export const baseurluser = `${import.meta.env.VITE_LOCAL_PORT}/api/user`;
+export const baseurlagent = `${import.meta.env.VITE_LOCAL_PORT}/api/agent`;
+export const basseurladmin = `${import.meta.env.VITE_LOCAL_PORT}/api/admin`;

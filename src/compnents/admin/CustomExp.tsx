@@ -19,7 +19,7 @@ interface MessageContentProps {
 
 }
 
-const ENDPOINTS = "https://zenvogue.online";
+const ENDPOINTS = `${import.meta.env.VITE_LOCAL_PORT}`;
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 const CustomerExperience: React.FC<ChatPageProps> = ({ }) => {

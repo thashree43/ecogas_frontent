@@ -209,6 +209,7 @@ const BookingProfilePage = () => {
     await userlogout().unwrap();
     dispatch(clearUserInfo());
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("userToken");
     toast.success("logout successfully");
     Navigate('/');
   };

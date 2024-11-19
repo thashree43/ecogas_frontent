@@ -1,22 +1,18 @@
-import extractToken from "./extracttoken";
+import { useSelector } from 'react-redux';
 import Cookies from "js-cookie";
+import extractToken from "./extracttoken";
 import type { DecodedToken } from "../interfacetypes/type";
+import { RootState } from '../store/store';
 
-// Fallback function to get a cookie by name directly from document.cookie
 const getCookieByName = (name: string): string | undefined => {
     const cookieMatch = document.cookie.match(`(^|;)\\s*${name}=([^;]+)`);
     return cookieMatch ? decodeURIComponent(cookieMatch[2]) : undefined;
 };
 
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store'; // Adjust the import based on your store location
-
-export const getToken = (name: string): DecodedToken | null => {
+// Custom hook to get the token using useSelector
+export const useGetToken = (name: string): DecodedToken | null => {
   try {
-    // Use Redux to get the token
     const token = useSelector((state: RootState) => state.user.token);
-    console.log("the token be this ",token);
-    
 
     if (token) {
       const userDetail = extractToken(token);
@@ -26,7 +22,6 @@ export const getToken = (name: string): DecodedToken | null => {
 
     // Fallback to cookies
     const cookieToken = Cookies.get(name) || getCookieByName(name);
-
     if (!cookieToken) {
       console.log("No token found in cookies");
       return null;
@@ -36,7 +31,8 @@ export const getToken = (name: string): DecodedToken | null => {
     console.log("Extracted user details from cookie:", userDetail);
     return userDetail;
   } catch (error) {
-    console.error("Error in getToken:", error);
+    console.error("Error in useGetToken:", error);
     return null;
   }
 };
+  

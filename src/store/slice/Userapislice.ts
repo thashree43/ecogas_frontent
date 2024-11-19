@@ -1,7 +1,7 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { baseurluser } from "../api";
 import { HttpMethod } from "../../schema/httpmethod";
-import {setUserToken,setUserInfo,clearUserInfo, clearUserToken} from './Authslice'
+
 interface User {
   success: any;
   _id: string;
@@ -60,88 +60,91 @@ interface RefreshTokenResponse {
 const baseQuery = fetchBaseQuery({
   baseUrl: baseurluser,
   credentials: 'include',
-  prepareHeaders: (headers) => {
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('userToken='))
-      ?.split('=')[1];
+  prepareHeaders: (headers, ) => {
+    
+    const token = localStorage.getItem("userToken");
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
+    } else {
+      console.log("No token found in localStorage");
     }
+
+    headers.forEach(() => {
+    });
+
     return headers;
   },
 });
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
 
-// const baseQueryWithReauth: BaseQueryFn<
-//   string | FetchArgs,
-//   unknown,
-//   FetchBaseQueryError
-// > = async (args, api, extraOptions) => {
-//   let result = await baseQuery(args, api, extraOptions);
+  if (result.error && result.error.status === 401) {
+    console.log("Token expired, attempting to refresh...");
 
-//   if (result.error && result.error.status === 401) {
-//     console.log("Token expired, attempting to refresh...");
+    const refreshResult = await baseQuery(
+      { url: '/userrefresh-token', method: 'POST' },
+      api,
+      extraOptions
+    );
 
-//     const refreshResult = await baseQuery(
-//       { url: '/userrefresh-token', method: 'POST' ,credentials:"include"},
-//       api,
-//       extraOptions
-//     );
-
-//     if (refreshResult.data) {
-//       const newToken = (refreshResult.data as RefreshTokenResponse).token;
+    if (refreshResult.data) {
+      const newToken = (refreshResult.data as RefreshTokenResponse).token;
 
       
-//       localStorage.setItem("userToken", newToken);
+      localStorage.setItem("userToken", newToken);
 
-//       const fetchArgs = typeof args === 'string' ? { url: args } : args;
+      const fetchArgs = typeof args === 'string' ? { url: args } : args;
 
-//       let newHeaders: HeadersInit;
+      let newHeaders: HeadersInit;
       
-//       if (fetchArgs.headers instanceof Headers) {
-//         newHeaders = new Headers(fetchArgs.headers);
-//       } else if (Array.isArray(fetchArgs.headers)) {
-//         newHeaders = fetchArgs.headers.reduce((acc, [key, value]) => {
-//           if (key && value) acc[key] = value;
-//           return acc;
-//         }, {} as Record<string, string>);
-//       } else if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
-//         newHeaders = fetchArgs.headers as Record<string, string>;
-//       } else {
-//         newHeaders = {};
-//       }
+      if (fetchArgs.headers instanceof Headers) {
+        newHeaders = new Headers(fetchArgs.headers);
+      } else if (Array.isArray(fetchArgs.headers)) {
+        newHeaders = fetchArgs.headers.reduce((acc, [key, value]) => {
+          if (key && value) acc[key] = value;
+          return acc;
+        }, {} as Record<string, string>);
+      } else if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
+        newHeaders = fetchArgs.headers as Record<string, string>;
+      } else {
+        newHeaders = {};
+      }
 
-//       if (newHeaders instanceof Headers) {
-//         newHeaders = Object.fromEntries(newHeaders.entries());
-//       }
+      if (newHeaders instanceof Headers) {
+        newHeaders = Object.fromEntries(newHeaders.entries());
+      }
 
-//       newHeaders = {
-//         ...newHeaders,
-//         'Authorization': `Bearer ${newToken}`
-//       };
+      newHeaders = {
+        ...newHeaders,
+        'Authorization': `Bearer ${newToken}`
+      };
 
 
-//       result = await baseQuery(
-//         {
-//           ...fetchArgs,
-//           headers: newHeaders,
-//         },
-//         api,
-//         extraOptions
-//       );
-//     } else {
-//       localStorage.removeItem("adminToken");
-//       localStorage.removeItem("refreshToken");
-//     }
-//   }
+      result = await baseQuery(
+        {
+          ...fetchArgs,
+          headers: newHeaders,
+        },
+        api,
+        extraOptions
+      );
+    } else {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("refreshToken");
+    }
+  }
 
-//   return result;
-// };
+  return result;
+};
 
 export const userApislice = createApi({
   reducerPath: "userApi",
-  baseQuery:baseQuery,
+  baseQuery:baseQueryWithReauth,
   tagTypes: ['User','GasProviders'],
   endpoints: (builder) => ({
     registerPost: builder.mutation({
@@ -166,31 +169,12 @@ export const userApislice = createApi({
       }),
     }),
     login: builder.mutation({
-      query: (credentials) => ({
+      query: ({ email, password }) => ({
         url: "/login",
         method: "POST",
-        body: credentials,
+        body: { email, password },
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch }) {
-        try {
-          const { data } = await queryFulfilled;
-          // Update user info and token in Redux store
-          dispatch(setUserToken(data.token));
-          dispatch(setUserInfo({
-            username: data.user.username,
-            user: data.user,
-            name: data.user.username,
-            email: data.user.email,
-            mobile: data.user.mobile,
-            password: '', // Don't store password in state
-          }));
-          localStorage.setItem("userrefreshToken", data.refreshtoken);
-        } catch (error) {
-          console.error("Login failed:", error);
-        }
-      },
     }),
-    
     refreshtoken:builder.mutation({
       query:()=>({
         url:"/userrefresh-token",
@@ -225,21 +209,11 @@ export const userApislice = createApi({
         body: postdata,
       }),
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
-        url: "/logout",
-        method: "POST",
-      }),
-      async onQueryStarted(_, { dispatch }) {
-        try {
-          // Clear auth state
-          dispatch(clearUserToken());
-          dispatch(clearUserInfo());
-          localStorage.removeItem("userrefreshToken");
-        } catch (error) {
-          console.error("Logout failed:", error);
-        }
-      },
+    logout:builder.mutation<void,void>({
+      query:()=>({
+        url:"/logout",
+        method:"POST",
+      })
     }),
      getProviders: builder.query<GasProvider[], string>({
       query: (pincode) => `/gas-providers/${pincode}`,
