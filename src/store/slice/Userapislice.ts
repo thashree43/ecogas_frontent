@@ -185,7 +185,8 @@ export const userApislice = createApi({
       query: (postData) => ({
         url: "/google-login",
         method: "POST",
-        body: { postData },
+        body: { postData},
+        credentials:'include'
       }),
     }),
     resendOtp: builder.mutation({
