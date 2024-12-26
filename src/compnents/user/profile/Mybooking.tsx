@@ -3,8 +3,8 @@ import { useGetordersQuery } from "../../../store/slice/Userapislice";
 import {  
   TruckIcon, 
   CalendarIcon, 
-  CreditCardIcon, 
-  ChevronLeftIcon, 
+  CreditCardIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
   Download
 } from 'lucide-react';
@@ -58,16 +58,17 @@ const OrderCard: React.FC<{ order: Order; index: number }> = ({ order, index }) 
         <div className="text-lg font-bold text-green-600">₹{order.price.toFixed(2)}</div>
         
         {(order.status.toLowerCase() === 'delivered' || order.status.toLowerCase() === 'completed') && (
-          <button 
-            className={`inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+          <Download 
+            className={`w-5 h-5 cursor-pointer transition-all duration-300 ${
               isHovered 
-                ? 'bg-green-600 text-white shadow-md transform scale-105' 
-                : 'bg-green-500 text-white'
+                ? 'text-green-600 transform scale-110' 
+                : 'text-green-500'
             }`}
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Invoice
-          </button>
+            onClick={() => {
+              // Add your invoice download logic here
+              console.log('Downloading invoice for order:', order._id);
+            }}
+          />
         )}
       </div>
     </div>
@@ -94,7 +95,6 @@ const OrderListCards: React.FC = () => {
   } = useGetordersQuery(userId);
 
   const [currentPage, setCurrentPage] = useState(1);
-  // Changed to show exactly 3 products per page
   const ordersPerPage = 3;
 
   if (userLoading) {    
@@ -131,7 +131,6 @@ const OrderListCards: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* Updated to always use a single column layout for exactly 3 items */}
           <div className="grid grid-cols-1 gap-6">
             {currentOrders.map((order: Order, index: number) => (
               <OrderCard key={order._id} order={order} index={indexOfFirstOrder + index} />
@@ -140,41 +139,25 @@ const OrderListCards: React.FC = () => {
           
           {totalPages > 1 && (
             <div className="flex justify-center mt-8">
-              <nav className="inline-flex rounded-md shadow">
+              <nav className="flex items-center gap-4">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium transition-colors ${
-                    currentPage === 1 
-                      ? 'cursor-not-allowed opacity-50' 
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-                  }`}
+                  className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronLeftIcon className="h-5 w-5" />
+                  <ChevronLeftIcon className="w-5 h-5" />
                 </button>
-                {[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium transition-colors ${
-                      currentPage === i + 1
-                        ? 'bg-blue-50 border-blue-500 text-blue-600 z-10'
-                        : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+
+                <span className="text-sm font-medium text-gray-700">
+                  Page {currentPage} of {totalPages}
+                </span>
+
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium transition-colors ${
-                    currentPage === totalPages 
-                      ? 'cursor-not-allowed opacity-50' 
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-                  }`}
+                  className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronRightIcon className="h-5 w-5" />
+                  <ChevronRightIcon className="w-5 h-5" />
                 </button>
               </nav>
             </div>
