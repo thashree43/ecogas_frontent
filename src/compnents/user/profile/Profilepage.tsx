@@ -207,9 +207,10 @@ const BookingProfilePage = () => {
 
   const handlelogout = async () => {
     await userlogout().unwrap();
-    dispatch(clearUserInfo());
+    
     localStorage.removeItem("userInfo");
     localStorage.removeItem("userToken");
+    dispatch(clearUserInfo());
     toast.success("logout successfully");
     Navigate('/');
   };

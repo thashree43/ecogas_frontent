@@ -150,7 +150,7 @@ const LoginComponent: React.FC<LoginPageProps> = ({
             Welcome Back!
           </h2>
 
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <button
               type="button"
               onClick={handleGoogleButtonClick}
@@ -163,7 +163,7 @@ const LoginComponent: React.FC<LoginPageProps> = ({
               />
               Log in with Google
             </button>
-          </div>
+          </div> */}
 
           {/* Divider */}
           <div className="flex items-center my-4">
