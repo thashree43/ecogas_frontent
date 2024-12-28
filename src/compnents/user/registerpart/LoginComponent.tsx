@@ -5,7 +5,7 @@ import Modal from "./Registermodal";
 import { validateInput, FormErrors } from "../../../validationpages/validation";
 import {
   useLoginMutation,
-  useGoogleregisterMutation,
+  // useGoogleregisterMutation,
   useRefreshtokenMutation,
 } from "../../../store/slice/Userapislice";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { setUserInfo ,setUserToken} from "../../../store/slice/Authslice";
 import { Link, useNavigate } from "react-router-dom";
-import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+// import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
 import { ToastContainer, toast } from "react-toastify";
 
 interface LoginPageProps {
@@ -34,7 +34,7 @@ const LoginComponent: React.FC<LoginPageProps> = ({
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginPost, { isLoading }] = useLoginMutation();
   const [refreshtoken] = useRefreshtokenMutation();
-  const [googleregister] = useGoogleregisterMutation();
+  // const [googleregister] = useGoogleregisterMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -93,54 +93,54 @@ const LoginComponent: React.FC<LoginPageProps> = ({
     }
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (token: TokenResponse) => {
-      try {
-        const response = await googleregister(token.access_token).unwrap();
-        dispatch(setUserInfo(response));
-        localStorage.setItem("userInfo", JSON.stringify(response));
-        dispatch(setUserToken(response.token));      
-        navigate("/");
-        setEmail("");
-        setPassword("");
-        onClose();
-        toast.success("Successfully logged in with Google!");
-      } catch (error: any) {
-        console.log("abhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  // const handleGoogleLogin = useGoogleLogin({
+  //   onSuccess: async (token: TokenResponse) => {
+  //     try {
+  //       const response = await googleregister(token.access_token).unwrap();
+  //       dispatch(setUserInfo(response));
+  //       localStorage.setItem("userInfo", JSON.stringify(response));
+  //       dispatch(setUserToken(response.token));      
+  //       navigate("/");
+  //       setEmail("");
+  //       setPassword("");
+  //       onClose();
+  //       toast.success("Successfully logged in with Google!");
+  //     } catch (error: any) {
+  //       console.log("abhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         
-        if (error.status === 401) {
-          console.error("login failed", error);
-          try {
-            console.log("the token set to refresh ");
+  //       if (error.status === 401) {
+  //         console.error("login failed", error);
+  //         try {
+  //           console.log("the token set to refresh ");
             
-            const refreshResult = await refreshtoken({}).unwrap();
-            console.log("reached the refresh token");
+  //           const refreshResult = await refreshtoken({}).unwrap();
+  //           console.log("reached the refresh token");
             
-            localStorage.setItem("userToken", refreshResult.token);
-            const retryRes = await googleregister(token.access_token).unwrap(); 
-            console.log("the refreshed token");       
-            dispatch(setUserInfo(retryRes.user)); 
-            dispatch(setUserToken(retryRes.token))
-            navigate("/");
-            setEmail("");
-            setPassword("");
-            onClose();
-            toast.success("Successfully logged in with Google!");
-          } catch (refreshError: any) {
-            setLoginError("Login failed after token refresh. Please try again.");
-          }
-        }
-      }
-    },
-    onError: (error) => {
-      console.log("Google login error", error);
-      toast.error("Google login error occurred.");
-    },
-  });
+  //           localStorage.setItem("userToken", refreshResult.token);
+  //           const retryRes = await googleregister(token.access_token).unwrap(); 
+  //           console.log("the refreshed token");       
+  //           dispatch(setUserInfo(retryRes.user)); 
+  //           dispatch(setUserToken(retryRes.token))
+  //           navigate("/");
+  //           setEmail("");
+  //           setPassword("");
+  //           onClose();
+  //           toast.success("Successfully logged in with Google!");
+  //         } catch (refreshError: any) {
+  //           setLoginError("Login failed after token refresh. Please try again.");
+  //         }
+  //       }
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.log("Google login error", error);
+  //     toast.error("Google login error occurred.");
+  //   },
+  // });
 
-  const handleGoogleButtonClick = () => {
-    handleGoogleLogin();
-  };
+  // const handleGoogleButtonClick = () => {
+  //   handleGoogleLogin();
+  // };
 
   return (
     <>
@@ -168,7 +168,7 @@ const LoginComponent: React.FC<LoginPageProps> = ({
           {/* Divider */}
           <div className="flex items-center my-4">
             <hr className="flex-grow border-gray-300" />
-            <span className="mx-2 text-gray-500">or</span>
+            {/* <span className="mx-2 text-gray-500">or</span> */}
             <hr className="flex-grow border-gray-300" />
           </div>
 
