@@ -56,7 +56,7 @@ const BookingCard: React.FC<{ order: Order; index: number }> = ({ order, index }
                 <div className="flex flex-row md:flex-col justify-between items-end md:min-w-[140px] md:text-right space-y-2 md:space-y-4">
     <div className="flex flex-col items-start md:items-end">
         <span className="text-sm text-gray-500">Total</span>
-        <span className="text-xl font-bold text-green-600">₹{order.price}</span>
+        <span className="text-xl font-bold text-green-600">₹{order.price}/-</span>
     </div>
     {order.status.toLowerCase() === "delivered" && (
         <button
@@ -67,7 +67,7 @@ const BookingCard: React.FC<{ order: Order; index: number }> = ({ order, index }
             } text-white text-xs font-semibold py-2 px-4 rounded-lg flex items-center justify-center transition duration-200 w-full`}
         >
             <FileTextIcon className="w-4 h-4 mr-2" />
-            {isGenerating ? 'Generating...' : 'Invoice'}
+            
         </button>
     )}
 </div>
