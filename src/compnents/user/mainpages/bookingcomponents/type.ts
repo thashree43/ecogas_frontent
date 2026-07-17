@@ -1,5 +1,6 @@
 
 export interface GasProvider {
+    name: string;
     _id: string;
     agentname: string;
     pincode: string;
